@@ -93,6 +93,20 @@ impl SimpfunClient {
         Ok(ar)
     }
 
+    /// 标记公告为已读：`POST /api/announcement_read`
+    pub async fn announcement_read(&self) -> Result<(), SdkError> {
+        let url = format!("{}/api/announcement_read", self.base_url);
+        let headers = self.build_auth_headers()?;
+
+        // 只要状态不是 401 等错误，check_response 会在 send_with_retry 内部处理
+        // 这里不关心具体返回体内容
+        let _resp = self
+            .send_with_retry(|| self.http.post(url.clone()).headers(headers.clone()).body(""))
+            .await?;
+
+        Ok(())
+    }
+
     /// 获取积分变动历史：`GET /api/pointhistory`
     pub async fn point_history(&self) -> Result<PointHistoryResponse, SdkError> {
         let url = format!("{}/api/pointhistory", self.base_url);
