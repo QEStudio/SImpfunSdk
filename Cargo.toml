@@ -1,0 +1,38 @@
+[package]
+name = "simpfun"
+version = "0.1.0"
+edition = "2024"
+description = "Unofficial Simpfun API Rust SDK"
+homepage = "https://github.com/QEStudio/simpfun-rs"
+repository = "https://github.com/QEStudio/simpfun-rs"
+license = "MIT"
+keywords = ["api", "sdk", "simpfun", "client"]
+categories = ["api-bindings", "web-programming"]
+readme = "README.md"
+
+[lib]
+name = "simpfun"
+path = "src/lib.rs"
+crate-type = ["rlib"]
+
+[features]
+default = []
+mimalloc = ["dep:mimalloc"]
+
+[dependencies]
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+serde_urlencoded = "0.7"
+tracing = "0.1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"] }
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+futures-util = "0.3"
+mimalloc = { version = "0.1", default-features = false, optional = true }
+flume = "0.11"
+ahash = "0.8"
+arc-swap = "1.7"
+
+[dev-dependencies]
+tracing-subscriber = "0.3"
