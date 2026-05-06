@@ -704,3 +704,21 @@ pub struct DevImageFeedbackResponse {
     pub msg: Option<String>,
     pub list: Option<Vec<DevImageFeedback>>,
 }
+
+// 技术支持返回模型
+// 单个支持记录的模型
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+pub struct DevSupport {
+    pub target_uid: String,        
+    pub target_qq: Option<String>,   
+    pub ins_id: String,
+    pub create_time: String,          
+    pub comment: String,
+}
+
+// 响应模型
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+pub struct DevSupportListResponse {
+    pub code: i32,                  
+    pub list: Vec<DevSupport>,
+}

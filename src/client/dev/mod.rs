@@ -1,6 +1,7 @@
 use super::SimpfunClient;
 
 pub mod image;
+pub mod support;
 
 pub struct DevClient<'a> {
     pub(crate) inner: &'a SimpfunClient,
