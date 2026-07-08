@@ -13,10 +13,8 @@
 use simpfun::{SdkError, SimpfunClient};
 
 fn get_credentials() -> (String, String) {
-    let username =
-        std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
-    let password =
-        std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
+    let username = std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
+    let password = std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
     (username, password)
 }
 

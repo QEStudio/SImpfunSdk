@@ -1,16 +1,16 @@
 //! 文件操作相关 API
 
-use crate::error::SdkError;
-use crate::models::{
-    InsFileListResponse,
-    InsFileContentResponse,
-    SimpleMsgResponse,
-};
 use super::UserClient;
+use crate::error::SdkError;
+use crate::models::{InsFileContentResponse, InsFileListResponse, SimpleMsgResponse};
 
 impl<'a> UserClient<'a> {
     /// 获取文件列表
-    pub async fn ins_file_list(&self, id: i64, path: &str) -> Result<InsFileListResponse, SdkError> {
+    pub async fn ins_file_list(
+        &self,
+        id: i64,
+        path: &str,
+    ) -> Result<InsFileListResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let qs = serde_urlencoded::to_string([("path", path)])?;
         let url = format!("{}/api/ins/{}/file/list?{}", self.inner.base_url, id, qs);
@@ -31,7 +31,11 @@ impl<'a> UserClient<'a> {
     }
 
     /// 获取文件内容
-    pub async fn ins_file_fetch(&self, id: i64, path: &str) -> Result<InsFileContentResponse, SdkError> {
+    pub async fn ins_file_fetch(
+        &self,
+        id: i64,
+        path: &str,
+    ) -> Result<InsFileContentResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let qs = serde_urlencoded::to_string([("path", path)])?;
         let url = format!("{}/api/ins/{}/file/fetch?{}", self.inner.base_url, id, qs);
@@ -52,7 +56,12 @@ impl<'a> UserClient<'a> {
     }
 
     /// 保存文件
-    pub async fn ins_file_save(&self, id: i64, path: &str, content: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_file_save(
+        &self,
+        id: i64,
+        path: &str,
+        content: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("path", path), ("content", content)])?;
         let url = format!("{}/api/ins/{}/file/save", self.inner.base_url, id);
@@ -79,7 +88,13 @@ impl<'a> UserClient<'a> {
     }
 
     /// 创建文件或目录
-    pub async fn ins_file_create(&self, id: i64, mode: &str, root: &str, name: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_file_create(
+        &self,
+        id: i64,
+        mode: &str,
+        root: &str,
+        name: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("mode", mode), ("root", root), ("name", name)])?;
         let url = format!("{}/api/ins/{}/file/create", self.inner.base_url, id);
@@ -106,7 +121,12 @@ impl<'a> UserClient<'a> {
     }
 
     /// 重命名文件
-    pub async fn ins_file_rename(&self, id: i64, origin: &str, target: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_file_rename(
+        &self,
+        id: i64,
+        origin: &str,
+        target: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("origin", origin), ("target", target)])?;
         let url = format!("{}/api/ins/{}/file/rename", self.inner.base_url, id);
@@ -133,7 +153,11 @@ impl<'a> UserClient<'a> {
     }
 
     /// 删除文件
-    pub async fn ins_file_delete(&self, id: i64, list: Vec<String>) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_file_delete(
+        &self,
+        id: i64,
+        list: Vec<String>,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let list_json = serde_json::to_string(&list)?;
         let body = serde_urlencoded::to_string([("list", list_json)])?;
@@ -239,10 +263,8 @@ impl<'a> UserClient<'a> {
     ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let list_json = serde_json::to_string(&list)?;
-        let body = serde_urlencoded::to_string([
-            ("list", list_json),
-            ("target", target.to_string()),
-        ])?;
+        let body =
+            serde_urlencoded::to_string([("list", list_json), ("target", target.to_string())])?;
         let url = format!("{}/api/ins/{}/file/paste", self.inner.base_url, id);
 
         let resp = self
@@ -267,7 +289,11 @@ impl<'a> UserClient<'a> {
     }
 
     /// 复制文件
-    pub async fn ins_file_copy(&self, id: i64, location: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_file_copy(
+        &self,
+        id: i64,
+        location: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("location", location)])?;
         let url = format!("{}/api/ins/{}/file/copy", self.inner.base_url, id);

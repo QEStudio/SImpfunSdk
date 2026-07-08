@@ -3,11 +3,11 @@
 use std::time::Duration;
 
 use reqwest::StatusCode;
-use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, AUTHORIZATION, CONTENT_TYPE, REFERER, ETAG};
+use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE, ETAG, HeaderMap, HeaderValue, REFERER};
 use tokio::time::sleep;
 
-use crate::error::SdkError;
 use super::SimpfunClient;
+use crate::error::SdkError;
 
 #[derive(Debug, Clone)]
 pub struct ResourceMeta {
@@ -44,7 +44,10 @@ impl SimpfunClient {
         Ok(headers)
     }
 
-    pub(crate) async fn send_with_retry<F>(&self, mut make: F) -> Result<reqwest::Response, SdkError>
+    pub(crate) async fn send_with_retry<F>(
+        &self,
+        mut make: F,
+    ) -> Result<reqwest::Response, SdkError>
     where
         F: FnMut() -> reqwest::RequestBuilder,
     {
@@ -87,7 +90,10 @@ impl SimpfunClient {
         } else if status == StatusCode::UNAUTHORIZED {
             Err(SdkError::AuthFailed)
         } else {
-            let body = resp.text().await.unwrap_or_else(|e| format!("无法读取响应体: {}", e));
+            let body = resp
+                .text()
+                .await
+                .unwrap_or_else(|e| format!("无法读取响应体: {}", e));
             Err(SdkError::Status { status, body })
         }
     }
@@ -99,7 +105,11 @@ impl SimpfunClient {
             .send_with_retry(|| self.http.head(url.clone()).headers(headers.clone()))
             .await?;
         let len = resp.content_length();
-        let etag = resp.headers().get(ETAG).and_then(|v| v.to_str().ok()).map(|s| s.to_string());
+        let etag = resp
+            .headers()
+            .get(ETAG)
+            .and_then(|v| v.to_str().ok())
+            .map(|s| s.to_string());
 
         Ok(ResourceMeta { len, etag })
     }

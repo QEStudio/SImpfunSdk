@@ -83,10 +83,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Event::InsDetail(detail) => {
                 println!(
                     "[详情] 实例[{}] 状态: {} | CPU: {} | 内存: {}",
-                    detail.data.id,
-                    detail.data.status,
-                    detail.data.cpu,
-                    detail.data.ram
+                    detail.data.id, detail.data.status, detail.data.cpu, detail.data.ram
                 );
             }
 
@@ -107,10 +104,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Event::Diamond(diamond) => {
                 println!("[钻石] 记录数: {}", diamond.list.len());
                 if let Some(first) = diamond.list.first() {
-                    println!(
-                        "  最近钻石变化: {} | {}",
-                        first.diamond, first.comment
-                    );
+                    println!("  最近钻石变化: {} | {}", first.diamond, first.comment);
                 }
             }
 

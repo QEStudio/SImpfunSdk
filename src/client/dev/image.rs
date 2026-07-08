@@ -1,14 +1,8 @@
-use crate::error::SdkError;
 use super::DevClient;
+use crate::error::SdkError;
 use crate::models::{
-    DevImageDetail,
-    DevImageDetailResponse,
-    DevImageFeedback,
-    DevImageFeedbackResponse,
-    DevImageItem,
-    DevImageListResponse,
-    DevImageVersion,
-    DevImageVersionResponse,
+    DevImageDetail, DevImageDetailResponse, DevImageFeedback, DevImageFeedbackResponse,
+    DevImageItem, DevImageListResponse, DevImageVersion, DevImageVersionResponse,
 };
 
 impl<'a> DevClient<'a> {
@@ -26,7 +20,9 @@ impl<'a> DevClient<'a> {
         if data.code != 200 {
             return Err(SdkError::Api {
                 code: data.code,
-                msg: data.msg.unwrap_or_else(|| "获取开发者镜像列表失败".to_string()),
+                msg: data
+                    .msg
+                    .unwrap_or_else(|| "获取开发者镜像列表失败".to_string()),
             });
         }
 
@@ -47,7 +43,9 @@ impl<'a> DevClient<'a> {
         if data.code != 200 {
             return Err(SdkError::Api {
                 code: data.code,
-                msg: data.msg.unwrap_or_else(|| format!("获取镜像 {} 详情失败", id)),
+                msg: data
+                    .msg
+                    .unwrap_or_else(|| format!("获取镜像 {} 详情失败", id)),
             });
         }
 
@@ -71,7 +69,9 @@ impl<'a> DevClient<'a> {
         if data.code != 200 {
             return Err(SdkError::Api {
                 code: data.code,
-                msg: data.msg.unwrap_or_else(|| format!("获取镜像 {} 版本失败", id)),
+                msg: data
+                    .msg
+                    .unwrap_or_else(|| format!("获取镜像 {} 版本失败", id)),
             });
         }
 
@@ -92,7 +92,9 @@ impl<'a> DevClient<'a> {
         if data.code != 200 {
             return Err(SdkError::Api {
                 code: data.code,
-                msg: data.msg.unwrap_or_else(|| format!("获取镜像 {} 反馈失败", id)),
+                msg: data
+                    .msg
+                    .unwrap_or_else(|| format!("获取镜像 {} 反馈失败", id)),
             });
         }
 

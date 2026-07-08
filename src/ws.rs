@@ -1,14 +1,14 @@
 use crate::{SdkError, SimpfunClient};
-use tokio::sync::broadcast;
-use tokio_tungstenite::connect_async;
-use tokio_tungstenite::tungstenite::Message;
 use futures_util::{SinkExt, StreamExt};
-use tracing::{debug, error, warn, info};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
-use tokio::time::{sleep, Duration};
+use std::sync::atomic::{AtomicBool, Ordering};
+use tokio::sync::broadcast;
+use tokio::time::{Duration, sleep};
+use tokio_tungstenite::connect_async;
+use tokio_tungstenite::tungstenite::Message;
+use tracing::{debug, error, info, warn};
 
 #[derive(Debug, Serialize)]
 pub enum WsEvent {
@@ -40,7 +40,8 @@ impl WsControl {
         let payload = serde_json::json!({
             "event": "send logs",
             "args": []
-        }).to_string();
+        })
+        .to_string();
         if let Err(e) = self.tx.send_async(Message::Text(payload)).await {
             error!("发送 send logs 失败: {}", e);
         }
@@ -50,7 +51,8 @@ impl WsControl {
         let payload = serde_json::json!({
             "event": "set state",
             "args": [state]
-        }).to_string();
+        })
+        .to_string();
         if let Err(e) = self.tx.send_async(Message::Text(payload)).await {
             error!("发送 set state 失败: {}", e);
         }
@@ -60,7 +62,8 @@ impl WsControl {
         let payload = serde_json::json!({
             "event": "send command",
             "args": [cmd]
-        }).to_string();
+        })
+        .to_string();
         if let Err(e) = self.tx.send_async(Message::Text(payload)).await {
             error!("发送 command 失败: {}", e);
         }
@@ -103,9 +106,14 @@ pub async fn connect_ins_ws(
             let (token, socket_url) = match client_clone.user().ins_ws_init(id).await {
                 Ok(init) => (init.data.token, init.data.socket),
                 Err(e) => {
-                    let _ = tx_evt.send_async(WsEvent::Error(format!("获取WS信息失败: {}", e))).await;
                     let _ = tx_evt
-                        .send_async(WsEvent::Reconnecting(format!("等待 {}s 后重试...", backoff_secs)))
+                        .send_async(WsEvent::Error(format!("获取WS信息失败: {}", e)))
+                        .await;
+                    let _ = tx_evt
+                        .send_async(WsEvent::Reconnecting(format!(
+                            "等待 {}s 后重试...",
+                            backoff_secs
+                        )))
                         .await;
                     sleep(Duration::from_secs(backoff_secs)).await;
                     backoff_secs = (backoff_secs * 2).min(max_backoff);
@@ -123,7 +131,8 @@ pub async fn connect_ins_ws(
                     let auth_payload = serde_json::json!({
                         "event": "auth",
                         "args": [token]
-                    }).to_string();
+                    })
+                    .to_string();
 
                     if let Err(e) = ws_write.send(Message::Text(auth_payload)).await {
                         error!("发送 Auth 失败: {}", e);
@@ -197,16 +206,24 @@ pub async fn connect_ins_ws(
                     }
 
                     let _ = tx_evt
-                        .send_async(WsEvent::Reconnecting(format!("连接断开，{}s 后重试...", backoff_secs)))
+                        .send_async(WsEvent::Reconnecting(format!(
+                            "连接断开，{}s 后重试...",
+                            backoff_secs
+                        )))
                         .await;
                     sleep(Duration::from_secs(backoff_secs)).await;
                     backoff_secs = (backoff_secs * 2).min(max_backoff);
                 }
                 Err(e) => {
                     error!("WS 连接失败: {}", e);
-                    let _ = tx_evt.send_async(WsEvent::Error(format!("连接失败: {}", e))).await;
                     let _ = tx_evt
-                        .send_async(WsEvent::Reconnecting(format!("等待 {}s 后重试...", backoff_secs)))
+                        .send_async(WsEvent::Error(format!("连接失败: {}", e)))
+                        .await;
+                    let _ = tx_evt
+                        .send_async(WsEvent::Reconnecting(format!(
+                            "等待 {}s 后重试...",
+                            backoff_secs
+                        )))
                         .await;
                     sleep(Duration::from_secs(backoff_secs)).await;
                     backoff_secs = (backoff_secs * 2).min(max_backoff);
@@ -245,7 +262,8 @@ async fn process_ws_message(
                 let payload = serde_json::json!({
                     "event": "send logs",
                     "args": []
-                }).to_string();
+                })
+                .to_string();
                 if let Err(e) = tx_msg.send_async(Message::Text(payload)).await {
                     error!("发送 send logs 失败: {}", e);
                 }
@@ -267,14 +285,18 @@ async fn process_ws_message(
             "console output" => {
                 if let Some(args) = v.args {
                     if let Some(s) = args.first() {
-                        let _ = tx_evt.send_async(WsEvent::ConsoleOutput(s.to_string())).await;
+                        let _ = tx_evt
+                            .send_async(WsEvent::ConsoleOutput(s.to_string()))
+                            .await;
                     }
                 }
             }
             "install output" => {
                 if let Some(args) = v.args {
                     if let Some(s) = args.first() {
-                        let _ = tx_evt.send_async(WsEvent::InstallOutput(s.to_string())).await;
+                        let _ = tx_evt
+                            .send_async(WsEvent::InstallOutput(s.to_string()))
+                            .await;
                     }
                 }
             }
@@ -304,7 +326,8 @@ async fn process_ws_message(
                             let payload = serde_json::json!({
                                 "event": "auth",
                                 "args": [new_init.data.token]
-                            }).to_string();
+                            })
+                            .to_string();
                             if let Err(e) = tx_msg_inner.send_async(Message::Text(payload)).await {
                                 error!("发送刷新Token失败: {}", e);
                             } else {

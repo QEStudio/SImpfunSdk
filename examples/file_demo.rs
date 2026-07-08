@@ -15,10 +15,8 @@
 use simpfun::{SdkError, SimpfunClient};
 
 fn get_credentials() -> (String, String, i64) {
-    let username =
-        std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
-    let password =
-        std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
+    let username = std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
+    let password = std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
     let instance_id: i64 = std::env::var("SIMPFUN_INSTANCE_ID")
         .expect("请设置 SIMPFUN_INSTANCE_ID 环境变量")
         .parse()
@@ -58,7 +56,11 @@ async fn main() -> Result<(), SdkError> {
 
     // 3. 列出特定目录
     println!("\n--- user().ins_file_list (/home/container) ---");
-    match client.user().ins_file_list(instance_id, "/home/container").await {
+    match client
+        .user()
+        .ins_file_list(instance_id, "/home/container")
+        .await
+    {
         Ok(files) => {
             println!("文件/目录数量: {}", files.list.len());
             for file in files.list.iter().take(10) {

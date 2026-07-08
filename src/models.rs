@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct LoginResponse {
@@ -709,16 +709,16 @@ pub struct DevImageFeedbackResponse {
 // 单个支持记录的模型
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct DevSupport {
-    pub target_uid: String,        
-    pub target_qq: Option<String>,   
+    pub target_uid: String,
+    pub target_qq: Option<String>,
     pub ins_id: String,
-    pub create_time: String,          
+    pub create_time: String,
     pub comment: String,
 }
 
 // 响应模型
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct DevSupportListResponse {
-    pub code: i32,                  
+    pub code: i32,
     pub list: Vec<DevSupport>,
 }

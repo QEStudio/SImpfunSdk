@@ -1,8 +1,8 @@
 //! Simpfun API 客户端模块
 
+pub mod dev;
 mod http;
 pub mod user;
-pub mod dev;
 
 use std::sync::Arc;
 use std::time::Duration;
@@ -12,9 +12,9 @@ use reqwest::Client;
 
 use crate::error::SdkError;
 
+pub use dev::DevClient;
 pub use http::ResourceMeta;
 pub use user::UserClient;
-pub use dev::DevClient;
 
 #[derive(Clone)]
 pub struct SimpfunClient {

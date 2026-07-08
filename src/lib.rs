@@ -27,23 +27,16 @@
 //! - 事件轮询系统（公告、积分、实例列表变更通知）
 //! - 自动重连与 Token 刷新
 
-mod error;
-mod models;
 mod client;
+mod error;
 mod events;
+mod models;
 mod ws;
 
 pub use crate::client::SimpfunClient;
 pub use crate::error::SdkError;
-pub use crate::models::*;
 pub use crate::events::{
-    EventManager,
-    Event,
-    EventIntervals,
-    EventStop,
-    EventControl,
-    EventCmd,
-    Topic,
-    PollingConfig,
+    Event, EventCmd, EventControl, EventIntervals, EventManager, EventStop, PollingConfig, Topic,
 };
-pub use crate::ws::{WsEvent, WsControl, WsStop, connect_ins_ws};
+pub use crate::models::*;
+pub use crate::ws::{WsControl, WsEvent, WsStop, connect_ins_ws};

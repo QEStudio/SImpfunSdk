@@ -1,15 +1,11 @@
 //! 用户认证相关 API
 
+use super::UserClient;
 use crate::error::SdkError;
 use crate::models::{
-    AuthInfoResponse,
-    LoginResponse,
-    AnnouncementListResponse,
-    PointHistoryResponse,
-    DiamondHistoryResponse,
-    InviteResponse,
+    AnnouncementListResponse, AuthInfoResponse, DiamondHistoryResponse, InviteResponse,
+    LoginResponse, PointHistoryResponse,
 };
-use super::UserClient;
 
 impl<'a> UserClient<'a> {
     /// 登录接口：`POST /api/auth/login`

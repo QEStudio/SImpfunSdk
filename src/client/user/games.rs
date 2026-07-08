@@ -1,14 +1,11 @@
 //! 游戏与镜像相关 API
 
+use super::UserClient;
 use crate::error::SdkError;
 use crate::models::{
-    GameListResponse,
-    GameKindListResponse,
+    CustomGameListResponse, CustomVersionListResponse, GameKindListResponse, GameListResponse,
     GameVersionListResponse,
-    CustomGameListResponse,
-    CustomVersionListResponse,
 };
-use super::UserClient;
 
 impl<'a> UserClient<'a> {
     /// 获取游戏列表
@@ -40,7 +37,7 @@ impl<'a> UserClient<'a> {
         }
         Ok(gr)
     }
-    
+
     /// 获取游戏种类列表
     pub async fn games_kind_list(
         &self,
@@ -68,9 +65,12 @@ impl<'a> UserClient<'a> {
         }
         Ok(gr)
     }
-    
+
     /// 获取游戏版本列表
-    pub async fn games_version_list(&self, kind_id: i64) -> Result<GameVersionListResponse, SdkError> {
+    pub async fn games_version_list(
+        &self,
+        kind_id: i64,
+    ) -> Result<GameVersionListResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let qs = serde_urlencoded::to_string([("kind_id", kind_id.to_string())])?;
         let url = format!("{}/api/games/versionlist?{}", self.inner.base_url, qs);
@@ -125,7 +125,10 @@ impl<'a> UserClient<'a> {
     ) -> Result<CustomVersionListResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let qs = serde_urlencoded::to_string([("kind_id", kind_id.to_string())])?;
-        let url = format!("{}/api/games/custom_versionlist?{}", self.inner.base_url, qs);
+        let url = format!(
+            "{}/api/games/custom_versionlist?{}",
+            self.inner.base_url, qs
+        );
 
         let resp = self
             .inner

@@ -11,10 +11,8 @@
 use simpfun::{SdkError, SimpfunClient};
 
 fn get_credentials() -> (String, String) {
-    let username =
-        std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
-    let password =
-        std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
+    let username = std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
+    let password = std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
     (username, password)
 }
 
@@ -58,10 +56,7 @@ async fn main() -> Result<(), SdkError> {
 
         let first_kind_id = kinds.list.first().map(|k| k.id);
         for kind in kinds.list.iter().take(10) {
-            println!(
-                "  [{}] {} | 描述: {}",
-                kind.id, kind.name, kind.description
-            );
+            println!("  [{}] {} | 描述: {}", kind.id, kind.name, kind.description);
         }
 
         // 5. 游戏版本列表
@@ -112,7 +107,11 @@ async fn main() -> Result<(), SdkError> {
                         "\n--- user().games_custom_version_list (kind_id={}) ---",
                         custom_kind_id
                     );
-                    match client.user().games_custom_version_list(custom_kind_id).await {
+                    match client
+                        .user()
+                        .games_custom_version_list(custom_kind_id)
+                        .await
+                    {
                         Ok(versions) => {
                             println!("版本数量: {}", versions.list.len());
                             println!("Windows: {}", versions.is_windows);

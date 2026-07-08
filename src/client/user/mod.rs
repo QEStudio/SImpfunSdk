@@ -1,9 +1,9 @@
 pub mod auth;
-pub mod instance;
-pub mod file;
 pub mod backup;
-pub mod shop;
+pub mod file;
 pub mod games;
+pub mod instance;
+pub mod shop;
 
 use super::SimpfunClient;
 

@@ -1,20 +1,12 @@
 //! 实例管理相关 API
 
+use super::UserClient;
 use crate::error::SdkError;
 use crate::models::{
-    InsListResponse,
-    InsDetailResponse,
+    ChangeResponse, DiamondPlanResponse, InsDetailResponse, InsListResponse, PowerResponse,
+    SftpResponse, SimpleMsgResponse, StatListResponse, SupportResponse, TasksResponse,
     WsInitResponse,
-    PowerResponse,
-    ChangeResponse,
-    SupportResponse,
-    SimpleMsgResponse,
-    SftpResponse,
-    TasksResponse,
-    StatListResponse,
-    DiamondPlanResponse,
 };
-use super::UserClient;
 
 impl<'a> UserClient<'a> {
     /// 获取实例列表
@@ -35,7 +27,7 @@ impl<'a> UserClient<'a> {
         }
         Ok(lr)
     }
-    
+
     /// 获取实例详情
     pub async fn ins_detail(&self, id: i64) -> Result<InsDetailResponse, SdkError> {
         let url = format!("{}/api/ins/{}/detail", self.inner.base_url, id);
@@ -47,7 +39,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let ir: InsDetailResponse = resp.json().await?;
         if ir.code != 200 {
-            return Err(SdkError::Api { code: ir.code, msg: "获取实例详情失败".to_string() });
+            return Err(SdkError::Api {
+                code: ir.code,
+                msg: "获取实例详情失败".to_string(),
+            });
         }
         Ok(ir)
     }
@@ -62,14 +57,20 @@ impl<'a> UserClient<'a> {
             .await?;
         let wi: WsInitResponse = resp.json().await?;
         if wi.code != 200 {
-            return Err(SdkError::Api { code: wi.code, msg: "获取WS信息失败".to_string() });
+            return Err(SdkError::Api {
+                code: wi.code,
+                msg: "获取WS信息失败".to_string(),
+            });
         }
         Ok(wi)
     }
 
     /// 实例电源操作
     pub async fn ins_power(&self, id: i64, action: &str) -> Result<PowerResponse, SdkError> {
-        let url = format!("{}/api/ins/{}/power?action={}", self.inner.base_url, id, action);
+        let url = format!(
+            "{}/api/ins/{}/power?action={}",
+            self.inner.base_url, id, action
+        );
         let headers = self.inner.build_auth_headers()?;
         let resp = self
             .inner
@@ -77,7 +78,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let pr: PowerResponse = resp.json().await?;
         if pr.code != 200 {
-            return Err(SdkError::Api { code: pr.code, msg: pr.msg.clone() });
+            return Err(SdkError::Api {
+                code: pr.code,
+                msg: pr.msg.clone(),
+            });
         }
         Ok(pr)
     }
@@ -99,7 +103,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let sr: SimpleMsgResponse = resp.json().await?;
         if sr.code != 200 {
-            return Err(SdkError::Api { code: sr.code, msg: sr.msg.clone() });
+            return Err(SdkError::Api {
+                code: sr.code,
+                msg: sr.msg.clone(),
+            });
         }
         Ok(sr)
     }
@@ -121,13 +128,20 @@ impl<'a> UserClient<'a> {
             .await?;
         let cr: ChangeResponse = resp.json().await?;
         if cr.code != 200 {
-            return Err(SdkError::Api { code: cr.code, msg: cr.msg.clone() });
+            return Err(SdkError::Api {
+                code: cr.code,
+                msg: cr.msg.clone(),
+            });
         }
         Ok(cr)
     }
 
     /// 设置实例的主端口
-    pub async fn ins_allocation_default(&self, id: i64, port_id: i64) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_allocation_default(
+        &self,
+        id: i64,
+        port_id: i64,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("port_id", port_id.to_string())])?;
         let url = format!("{}/api/ins/{}/allocation", self.inner.base_url, id);
@@ -143,7 +157,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let sr: SimpleMsgResponse = resp.json().await?;
         if sr.code != 200 {
-            return Err(SdkError::Api { code: sr.code, msg: sr.msg.clone() });
+            return Err(SdkError::Api {
+                code: sr.code,
+                msg: sr.msg.clone(),
+            });
         }
         Ok(sr)
     }
@@ -158,13 +175,20 @@ impl<'a> UserClient<'a> {
             .await?;
         let sr: SupportResponse = resp.json().await?;
         if sr.code != 200 {
-            return Err(SdkError::Api { code: sr.code, msg: "获取技术支持信息失败".to_string() });
+            return Err(SdkError::Api {
+                code: sr.code,
+                msg: "获取技术支持信息失败".to_string(),
+            });
         }
         Ok(sr)
     }
 
     /// 创建实例技术支持
-    pub async fn ins_support_create(&self, id: i64, comment: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_support_create(
+        &self,
+        id: i64,
+        comment: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("comment", comment)])?;
         let url = format!("{}/api/ins/{}/support", self.inner.base_url, id);
@@ -180,13 +204,20 @@ impl<'a> UserClient<'a> {
             .await?;
         let sr: SimpleMsgResponse = resp.json().await?;
         if sr.code != 200 {
-            return Err(SdkError::Api { code: sr.code, msg: sr.msg.clone() });
+            return Err(SdkError::Api {
+                code: sr.code,
+                msg: sr.msg.clone(),
+            });
         }
         Ok(sr)
     }
 
     /// 结束实例技术支持
-    pub async fn ins_support_end(&self, id: i64, feedback: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_support_end(
+        &self,
+        id: i64,
+        feedback: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("feedback", feedback)])?;
         let url = format!("{}/api/ins/{}/support", self.inner.base_url, id);
@@ -202,7 +233,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let sr: SimpleMsgResponse = resp.json().await?;
         if sr.code != 200 {
-            return Err(SdkError::Api { code: sr.code, msg: sr.msg.clone() });
+            return Err(SdkError::Api {
+                code: sr.code,
+                msg: sr.msg.clone(),
+            });
         }
         Ok(sr)
     }
@@ -217,7 +251,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let dr: DiamondPlanResponse = resp.json().await?;
         if dr.code != 200 {
-            return Err(SdkError::Api { code: dr.code, msg: "获取钻石套餐失败".to_string() });
+            return Err(SdkError::Api {
+                code: dr.code,
+                msg: "获取钻石套餐失败".to_string(),
+            });
         }
         Ok(dr)
     }
@@ -232,7 +269,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let sr: SftpResponse = resp.json().await?;
         if sr.code != 200 {
-            return Err(SdkError::Api { code: sr.code, msg: "获取SFTP信息失败".to_string() });
+            return Err(SdkError::Api {
+                code: sr.code,
+                msg: "获取SFTP信息失败".to_string(),
+            });
         }
         Ok(sr)
     }
@@ -247,7 +287,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let tr: TasksResponse = resp.json().await?;
         if tr.code != 200 {
-            return Err(SdkError::Api { code: tr.code, msg: "获取任务列表失败".to_string() });
+            return Err(SdkError::Api {
+                code: tr.code,
+                msg: "获取任务列表失败".to_string(),
+            });
         }
         Ok(tr)
     }
@@ -262,11 +305,14 @@ impl<'a> UserClient<'a> {
             .await?;
         let sr: StatListResponse = resp.json().await?;
         if sr.code != 200 {
-            return Err(SdkError::Api { code: sr.code, msg: "获取历史统计失败".to_string() });
+            return Err(SdkError::Api {
+                code: sr.code,
+                msg: "获取历史统计失败".to_string(),
+            });
         }
         Ok(sr)
     }
-    
+
     /// 实例重装
     pub async fn ins_reinstall(
         &self,
@@ -299,7 +345,10 @@ impl<'a> UserClient<'a> {
             .await?;
         let sr: SimpleMsgResponse = resp.json().await?;
         if sr.code != 200 {
-            return Err(SdkError::Api { code: sr.code, msg: sr.msg.clone() });
+            return Err(SdkError::Api {
+                code: sr.code,
+                msg: sr.msg.clone(),
+            });
         }
         Ok(sr)
     }

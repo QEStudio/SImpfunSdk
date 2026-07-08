@@ -13,10 +13,8 @@
 use simpfun::{SdkError, SimpfunClient};
 
 fn get_credentials() -> (String, String, i64) {
-    let username =
-        std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
-    let password =
-        std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
+    let username = std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
+    let password = std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
     let instance_id: i64 = std::env::var("SIMPFUN_INSTANCE_ID")
         .expect("请设置 SIMPFUN_INSTANCE_ID 环境变量")
         .parse()
@@ -69,7 +67,11 @@ async fn main() -> Result<(), SdkError> {
     // 4. 获取备份下载链接
     if let Some(backup_id) = first_backup_id {
         println!("\n--- user().ins_backup_download ---");
-        match client.user().ins_backup_download(instance_id, backup_id).await {
+        match client
+            .user()
+            .ins_backup_download(instance_id, backup_id)
+            .await
+        {
             Ok(download) => {
                 println!("下载 UUID: {}", download.uuid);
             }

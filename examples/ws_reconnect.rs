@@ -9,7 +9,7 @@
 //! - 登录属于 user() API
 //! - WebSocket 连接入口仍然是 connect_ins_ws(&client, id)
 
-use simpfun::{connect_ins_ws, SdkError, SimpfunClient, WsEvent};
+use simpfun::{SdkError, SimpfunClient, WsEvent, connect_ins_ws};
 use std::time::Duration;
 use tokio::time::sleep;
 
@@ -96,7 +96,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                     let mut retry_interval = 1;
                     loop {
-                        match client.user().login_and_set_token(&username, &password).await {
+                        match client
+                            .user()
+                            .login_and_set_token(&username, &password)
+                            .await
+                        {
                             Ok(_) => {
                                 println!("重新登录成功！");
                                 break;

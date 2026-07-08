@@ -1,13 +1,10 @@
 //! 备份与回滚相关 API
 
+use super::UserClient;
 use crate::error::SdkError;
 use crate::models::{
-    BackupListResponse,
-    BackupDownloadResponse,
-    RollbackListResponse,
-    SimpleMsgResponse,
+    BackupDownloadResponse, BackupListResponse, RollbackListResponse, SimpleMsgResponse,
 };
-use super::UserClient;
 
 impl<'a> UserClient<'a> {
     /// 获取备份列表
@@ -31,7 +28,11 @@ impl<'a> UserClient<'a> {
     }
 
     /// 创建备份
-    pub async fn ins_backup_create(&self, id: i64, tag: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_backup_create(
+        &self,
+        id: i64,
+        tag: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("tag", tag)])?;
         let url = format!("{}/api/ins/{}/backup", self.inner.base_url, id);
@@ -58,7 +59,12 @@ impl<'a> UserClient<'a> {
     }
 
     /// 重命名备份
-    pub async fn ins_backup_rename(&self, id: i64, backup_id: i64, new_tag: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_backup_rename(
+        &self,
+        id: i64,
+        backup_id: i64,
+        new_tag: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([
             ("backup_id", backup_id.to_string()),
@@ -88,7 +94,11 @@ impl<'a> UserClient<'a> {
     }
 
     /// 恢复备份
-    pub async fn ins_backup_restore(&self, id: i64, backup_id: i64) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_backup_restore(
+        &self,
+        id: i64,
+        backup_id: i64,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("backup_id", backup_id.to_string())])?;
         let url = format!("{}/api/ins/{}/backup", self.inner.base_url, id);
@@ -115,7 +125,11 @@ impl<'a> UserClient<'a> {
     }
 
     /// 删除备份
-    pub async fn ins_backup_delete(&self, id: i64, backup_id: i64) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_backup_delete(
+        &self,
+        id: i64,
+        backup_id: i64,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("backup_id", backup_id.to_string())])?;
         let url = format!("{}/api/ins/{}/backup", self.inner.base_url, id);
@@ -142,7 +156,11 @@ impl<'a> UserClient<'a> {
     }
 
     /// 获取备份下载链接
-    pub async fn ins_backup_download(&self, id: i64, backup_id: i64) -> Result<BackupDownloadResponse, SdkError> {
+    pub async fn ins_backup_download(
+        &self,
+        id: i64,
+        backup_id: i64,
+    ) -> Result<BackupDownloadResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let qs = serde_urlencoded::to_string([("down_id", backup_id.to_string())])?;
         let url = format!("{}/api/ins/{}/backup?{}", self.inner.base_url, id, qs);
@@ -183,7 +201,11 @@ impl<'a> UserClient<'a> {
     }
 
     /// 执行回滚
-    pub async fn ins_rollback_create(&self, id: i64, rollback_time: &str) -> Result<SimpleMsgResponse, SdkError> {
+    pub async fn ins_rollback_create(
+        &self,
+        id: i64,
+        rollback_time: &str,
+    ) -> Result<SimpleMsgResponse, SdkError> {
         let headers = self.inner.build_auth_headers()?;
         let body = serde_urlencoded::to_string([("rollback_time", rollback_time)])?;
         let url = format!("{}/api/ins/{}/rollback", self.inner.base_url, id);

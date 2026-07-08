@@ -18,10 +18,8 @@
 use simpfun::{SdkError, SimpfunClient};
 
 fn get_credentials() -> (String, String) {
-    let username =
-        std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
-    let password =
-        std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
+    let username = std::env::var("SIMPFUN_USERNAME").expect("请设置 SIMPFUN_USERNAME 环境变量");
+    let password = std::env::var("SIMPFUN_PASSWORD").expect("请设置 SIMPFUN_PASSWORD 环境变量");
     (username, password)
 }
 
@@ -83,8 +81,7 @@ async fn main() -> Result<(), SdkError> {
     );
     println!(
         "入口: {}:{}",
-        detail.data.default_allocation.ip,
-        detail.data.default_allocation.port
+        detail.data.default_allocation.ip, detail.data.default_allocation.port
     );
 
     // 4. WebSocket 连接信息
@@ -113,10 +110,7 @@ async fn main() -> Result<(), SdkError> {
     println!("任务数量: {}", tasks.list.len());
     println!("运行中: {} | 等待中: {}", tasks.running, tasks.waiting);
     for task in tasks.list.iter().take(3) {
-        println!(
-            "  [{}] 状态: {} | {}",
-            task.id, task.status, task.comment
-        );
+        println!("  [{}] 状态: {} | {}", task.id, task.status, task.comment);
     }
 
     // 7. 历史统计

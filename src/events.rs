@@ -2,23 +2,18 @@
 //!
 //! 提供极速探测 + 本地去重的事件监控机制
 
-use crate::{SimpfunClient, SdkError};
 use crate::models::{
-    AnnouncementListResponse,
-    AuthInfoResponse,
-    DiamondHistoryResponse,
-    InsListResponse,
-    InviteResponse,
-    PointHistoryResponse,
-    InsDetailResponse,
+    AnnouncementListResponse, AuthInfoResponse, DiamondHistoryResponse, InsDetailResponse,
+    InsListResponse, InviteResponse, PointHistoryResponse,
 };
+use crate::{SdkError, SimpfunClient};
+use futures_util::future::join_all;
+use reqwest::StatusCode;
+use serde::Serialize;
+use std::collections::HashMap;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
-use tokio::time::{interval, Duration, MissedTickBehavior};
-use std::collections::HashMap;
-use reqwest::StatusCode;
-use futures_util::future::join_all;
-use serde::Serialize;
+use tokio::time::{Duration, MissedTickBehavior, interval};
 
 use crate::client::ResourceMeta;
 
@@ -129,13 +124,18 @@ pub struct EventControl {
 
 impl EventControl {
     pub async fn force_refresh_all(&self) {
-        let _ = self.tx.send_async(EventCmd::ForceRefresh { topics: None }).await;
+        let _ = self
+            .tx
+            .send_async(EventCmd::ForceRefresh { topics: None })
+            .await;
     }
 
     pub async fn force_refresh_topics(&self, topics: Vec<Topic>) {
         let _ = self
             .tx
-            .send_async(EventCmd::ForceRefresh { topics: Some(topics) })
+            .send_async(EventCmd::ForceRefresh {
+                topics: Some(topics),
+            })
             .await;
     }
 
@@ -223,7 +223,10 @@ impl EventManager {
             }
         });
 
-        let stop = EventStop { tx: shutdown_tx, join };
+        let stop = EventStop {
+            tx: shutdown_tx,
+            join,
+        };
         let control = EventControl { tx: cmd_tx };
         Ok((rx, control, stop))
     }
@@ -271,7 +274,9 @@ async fn init_all_details(
 ) {
     for &id in watch_details {
         if let Err(e) = fetch_and_dispatch_detail(client, tx, states, id).await {
-            let _ = tx.send_async(Event::Error(format!("GET ins:{} {}", id, e))).await;
+            let _ = tx
+                .send_async(Event::Error(format!("GET ins:{} {}", id, e)))
+                .await;
         }
     }
 }
@@ -423,7 +428,9 @@ async fn send_error_event(tx: &flume::Sender<Event>, ctx: &str, e: SdkError, op:
             let _ = tx.send_async(Event::Offline(format!("{} 400", ctx))).await;
         }
         _ => {
-            let _ = tx.send_async(Event::Error(format!("{} {} {}", op, ctx, e))).await;
+            let _ = tx
+                .send_async(Event::Error(format!("{} {} {}", op, ctx, e)))
+                .await;
         }
     }
 }

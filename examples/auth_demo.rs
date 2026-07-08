@@ -99,7 +99,10 @@ async fn main() -> Result<(), SdkError> {
     println!("当前 Token: {:?}", client.token());
 
     println!("\n--- 方式二：user().login_and_set_token ---");
-    let token = client.user().login_and_set_token(&username, &password).await?;
+    let token = client
+        .user()
+        .login_and_set_token(&username, &password)
+        .await?;
     println!("登录成功，Token: {}...", &token[..20.min(token.len())]);
 
     println!("\n--- user().logout ---");
